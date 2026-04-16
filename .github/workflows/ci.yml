@@ -27,7 +27,7 @@ jobs:
       - name: Push Docker image
         run: docker push ${{ secrets.DOCKER_USERNAME }}/app:latest
 
-notify:
+  notify:
     needs: build-push
     if: always()
     runs-on: ubuntu-latest
