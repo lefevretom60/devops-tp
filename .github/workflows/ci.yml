@@ -26,3 +26,18 @@ jobs:
 
       - name: Push Docker image
         run: docker push ${{ secrets.DOCKER_USERNAME }}/app:latest
+
+  notify:
+    needs: build-push
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send notification to n8n
+        run: |
+          curl -X POST "$N8N_WEBHOOK_URL" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "status": "${{ job.status }}",
+              "branch": "${{ github.ref_name }}",
+              "author": "${{ github.actor }}"
+            }'
